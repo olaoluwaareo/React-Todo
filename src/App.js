@@ -1,30 +1,31 @@
 import React from 'react'
 import { useState } from "react"
+import AddItem from './components/AddItem'
+import ListOfItem from './components/ListOfItem'
 const App = () => {
-  const [myItem, setmyItem] = useState("")
   const [allItem, setallItem] = useState([])
   const [myBtn, setmyBtn] = useState("Add Item")
   const [myIndex, setmyIndex] = useState(0)
-  const addItem = () => {
+  const addItem = (items) => {
+    let myItem = items.myItem
     if (myItem == "") {
       alert("please kindly enter an item")
     }
     else {
       let indItem = { myItem }
       if (myBtn == "Add Item") {
-        let newItem = [...allItem, indItem]
+        let newItem = [...allItem, items]
         setallItem(newItem)
-        setmyItem("")
+        items.stateChange.setmyItem("")
       }
     }
 
     if (myBtn == "Edit Item") {
-      console.log(`I dey answer you John-Fixit`);
-      let newEditItem = { myItem };
-      allItem[myIndex] = newEditItem;
+      let newEditItem = items ;
+      allItem[myIndex] = newEditItem; 
       setallItem(allItem)
       setmyBtn("Add Item")
-      setmyItem("")
+      items.stateChange.setmyItem("")
     }
   }
   const deleteBtn = (myInd) => {
@@ -35,7 +36,7 @@ const App = () => {
   }
   const editBtn = (myInd) => {
     setmyBtn("Edit Item")
-    setmyItem(allItem[myInd].myItem)
+    allItem[myInd].stateChange.setmyItem(allItem[myInd].myItem)
     setmyIndex(myInd)
 
   }
@@ -44,35 +45,12 @@ const App = () => {
       <div className='container bg-dark shadow p-3'>
         <h2 className='card-header text-light text-center'>To Do List</h2>
         <div className='column'>
-          
-          <div className='row-md-6'>
-            <input className='form-control col-sm-12 col-md-5 mx-auto' type="text" placeholder="Enter your item here" onChange={(event) => setmyItem(event.target.value)} value={myItem} />
-            <button className='btn btn-warning float-end mt-3' onClick={addItem}>{myBtn}</button>
-          </div>
-          <div className='row-md-6 text-light'>
-        { allItem.length<1 ? <h3 className='mt-5'>Kindly Enter an Item</h3>:
-            <table className='table text-light'>
-              <thead>
-                <th>S/N</th>
-                <th>Item</th>
-                <th>Action</th>
+          <AddItem addItem= {addItem} myBtn={myBtn} allItem editBtn/>
 
-              </thead>
-              {
-                allItem.map((aud, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{aud.myItem}</td>
-                    <td>
-                      <button className='btn bg-warning text-light ms-2' onClick={() => editBtn(index)}>Edit</button>
-                      <button className='btn bg-danger ms-2' onClick={() => deleteBtn(index)}>Delete</button>
-                    </td>
-                  </tr>
-                ))
-              }
-              
-            </table>
-}
+          <div className='row-md-6 text-light'>
+            {allItem.length < 1 ? <h3 className='mt-5'>Kindly Enter an Item</h3> :
+                <ListOfItem allItem={allItem} editBtn={editBtn} deleteBtn={deleteBtn}/>
+            }
           </div>
         </div>
       </div>
